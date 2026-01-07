@@ -1,5 +1,6 @@
 from app.domain.entities.generated_script import GeneratedScript
 from app.domain.uow.unit_of_work import UnitOfWork
+from app.application.exceptions.exception import GeneratedScriptNotFoundError
 
 
 class ReadGeneratedScriptUseCase:
@@ -11,6 +12,6 @@ class ReadGeneratedScriptUseCase:
             result = await self.uow.generated_scripts.get(generated_script_id)
 
         if not result:
-            raise ValueError(f"Generated script with id {generated_script_id} not found")
+            raise GeneratedScriptNotFoundError(f"Generated script with id {generated_script_id} not found")
 
         return result
