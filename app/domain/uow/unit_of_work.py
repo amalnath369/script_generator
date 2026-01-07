@@ -1,8 +1,10 @@
 from abc import ABC, abstractmethod
 from app.domain.repositories.script_repository import ScriptRepository
+from app.domain.repositories.genrated_script_repository import GeneratedScriptRepository
 
 class UnitOfWork(ABC):
     scripts: ScriptRepository
+    generated_scripts: GeneratedScriptRepository
     
 
     @abstractmethod
