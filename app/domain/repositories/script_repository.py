@@ -5,7 +5,7 @@ from app.domain.entities.script import Script
 
 
 class ScriptRepository(ABC):
-    
+
     @abstractmethod
     async def save(self, script: "Script") -> None:
         pass
@@ -15,7 +15,7 @@ class ScriptRepository(ABC):
         pass
     
     @abstractmethod
-    async def update_status(self, script_id: str, new_status: str) -> None:
+    async def update(self, script_id: str, new_status: str) -> None:
         pass
 
     @abstractmethod
