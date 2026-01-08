@@ -7,7 +7,10 @@ class ListAllScriptsUseCase:
     def __init__(self, uow: UnitOfWork):
         self.uow = uow
 
-    async def execute(self) -> List[Script]:
+    async def execute(self, *, limit: int, offset: int) -> List[Script]:
         async with self.uow:
-            scripts = await self.uow.scripts.list_all()
-            return scripts
+            total, scripts = await self.uow.scripts.list_all(
+                limit=limit,
+                offset=offset
+            )
+            return total, scripts

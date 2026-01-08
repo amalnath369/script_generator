@@ -1,5 +1,8 @@
+from typing import Optional, List
 from app.domain.entities.script import Script
 from app.domain.uow.unit_of_work import UnitOfWork
+
+from app.application.exceptions.exception import ScriptValidationError, ScriptNotFoundError
 
 
 
@@ -7,19 +10,21 @@ class UpdateScriptsUseCase:
     def __init__(self, uow: UnitOfWork):
         self.uow = uow
 
-    async def execute(self, *, script_id: str, name: str, content: str, tags: list[str]) -> Script:
+    async def execute(self, *, script_id: str, name: Optional[str], content: Optional[str], tags: Optional[List[str]]) -> Script:
         async with self.uow:
             script = await self.uow.scripts.get_by_id(script_id)
             if script is None:
-                raise ValueError(f"Script with id {script_id} not found.")
+                raise ScriptNotFoundError(f"Script with id {script_id} not found.")
 
-            updated_script = Script(
-                id=script.id,
-                name=name,
-                content=content,
-                tags=tags,
-                status=script.status
-            )
+            if name is not None:
+                script.name = name
 
-            await self.uow.scripts.update(updated_script)
-            return updated_script
+            if content is not None:
+                script.content = content
+
+            if tags is not None:
+                script.tags = tags
+
+
+            await self.uow.scripts.update(script)
+            return script

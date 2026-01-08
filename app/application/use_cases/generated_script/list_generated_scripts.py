@@ -7,6 +7,10 @@ class ListGeneratedScriptsByScriptUseCase:
     def __init__(self, uow: UnitOfWork):
         self.uow = uow
 
-    async def execute(self, *, script_id: str) -> List[GeneratedScript]:
+    async def execute(self, *, limit: int, offset: int) -> List[GeneratedScript]:
         async with self.uow:
-            return await self.uow.generated_scripts.list_all(script_id)
+            total, scripts = await self.uow.scripts.list_all(
+                limit=limit,
+                offset=offset
+            )
+            return total, scripts

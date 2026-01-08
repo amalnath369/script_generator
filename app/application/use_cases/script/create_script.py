@@ -43,7 +43,12 @@ class CreateScriptUseCase:
 
         # ---------- Background Processing ----------
         try:
-            process_script_task.delay(script.id)
+             process_script_task.delay(
+                script.id,
+                script.name,
+                script.content,
+                script.tags
+            )
         except Exception as exc:
             # Script is saved, but background task failed
             raise ScriptProcessingDispatchError(
