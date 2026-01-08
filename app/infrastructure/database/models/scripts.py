@@ -8,5 +8,5 @@ class ScriptModel(BaseDBModel):
 
     name = Column(String, nullable=False, index=True)
     content = Column(Text, nullable=False)
-    tags = Column(ARRAY(String), nullable=False)
+    tags = Column(ARRAY(String), nullable=False, index=True)
     status = Column(Enum(ScriptStatus), nullable=False, default=ScriptStatus.PENDING)
