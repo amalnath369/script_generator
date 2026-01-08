@@ -1,13 +1,12 @@
-from sqlalchemy import column, Integer,  Enum, String, Text, ARRAY
-from app.infrastructure.database.models.base import BaseModel
+from sqlalchemy import Column, Integer,  Enum, String, Text, ARRAY
+from app.infrastructure.database.models.base import BaseDBModel
 from app.domain.entities.enums import ScriptStatus
 
 
-class ScriptModel(BaseModel):
+class ScriptModel(BaseDBModel):
     __tablename__ = "scripts"
 
-    id = column(Integer, primary_key=True, index=True)
-    name = column(String, nullable=False, index=True)
-    content = column(Text, nullable=False)
-    tags = column(ARRAY(String), nullable=False)
-    status = column(Enum(ScriptStatus), nullable=False, default=ScriptStatus.PENDING)
+    name = Column(String, nullable=False, index=True)
+    content = Column(Text, nullable=False)
+    tags = Column(ARRAY(String), nullable=False)
+    status = Column(Enum(ScriptStatus), nullable=False, default=ScriptStatus.PENDING)

@@ -1,11 +1,11 @@
-from sqlalchemy import Column, Integer, DateTime
+from sqlalchemy import Column, Integer, DateTime, String, func
 from app.infrastructure.database.session import Base
 
 
 
-class BaseModel(Base):
+class BaseDBModel(Base):
     __abstract__ = True
     
-    id = Column(Integer, primary_key=True, index=True)
-    created_at = Column(DateTime, nullable=False)
-    updated_at = Column(DateTime, nullable=False)
+    id = Column(String, primary_key=True, index=True)
+    created_at = Column(DateTime, server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
