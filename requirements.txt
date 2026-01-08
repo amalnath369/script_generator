@@ -15,3 +15,5 @@ alembic
 
 httpx
 slowapi
+pytest
+pytest-asyncio
