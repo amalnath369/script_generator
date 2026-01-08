@@ -1,6 +1,6 @@
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
-from sqlalchemy import select, update, delete
+from sqlalchemy import select, update, delete, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.entities.generated_script import GeneratedScript
@@ -20,8 +20,11 @@ class IGeneratedScriptRepository(GeneratedScriptRepository):
             content=script.content,
             tags=script.tags,
             status=script.status,
+            model_name=script.model_name,
         )
         self.session.add(model)
+
+
 
     async def get_by_id(self, script_id: str) -> Optional[GeneratedScript]:
         model = await self.session.get(GeneratedScriptModel, script_id)
@@ -29,6 +32,17 @@ class IGeneratedScriptRepository(GeneratedScriptRepository):
             return None
 
         return self._to_domain(model)
+    
+    
+    async def get_by_script_id(self, script_id: str) -> Optional[List[GeneratedScript]]:
+        stmt = select(GeneratedScriptModel).where(GeneratedScriptModel.script_id == script_id)
+        result = await self.session.execute(stmt)
+        models = result.scalars().all()
+        if not models:
+            return None
+
+        return [self._to_domain(model) for model in models]
+    
 
     async def update(self, script_id: str, new_status: str) -> None:
         stmt = (
@@ -38,18 +52,26 @@ class IGeneratedScriptRepository(GeneratedScriptRepository):
         )
         await self.session.execute(stmt)
 
+
+
     async def delete(self, script_id: str) -> None:
         stmt = delete(GeneratedScriptModel).where(
             GeneratedScriptModel.id == script_id
         )
         await self.session.execute(stmt)
 
-    async def list_all(self) -> List[GeneratedScript]:
-        stmt = select(GeneratedScriptModel)
+
+
+    async def list_all(self, *, limit: int, offset: int) -> Tuple[int, List[GeneratedScript]]:
+        total_stmt = select(func.count()).select_from(GeneratedScriptModel)
+        total = await self.session.scalar(total_stmt)
+
+        stmt = select(GeneratedScriptModel).limit(limit).offset(offset)
         result = await self.session.execute(stmt)
         models = result.scalars().all()
 
-        return [self._to_domain(model) for model in models]
+        return total, [self._to_domain(model) for model in models]
+
 
     # 🔁 Mapper
     def _to_domain(self, model: GeneratedScriptModel) -> GeneratedScript:
@@ -60,4 +82,7 @@ class IGeneratedScriptRepository(GeneratedScriptRepository):
             content=model.content,
             tags=model.tags,
             status=model.status,
+            model_name=model.model_name,
+            created_at=model.created_at if hasattr(model, 'created_at') else None,
+            updated_at=model.updated_at if hasattr(model, 'updated_at') else None
         )
