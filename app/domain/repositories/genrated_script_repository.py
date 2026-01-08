@@ -16,6 +16,10 @@ class GeneratedScriptRepository(ABC):
         pass
     
     @abstractmethod
+    async def get_by_script_id(self, script_id: str) -> Optional[List["GeneratedScript"]]:
+        pass
+
+    @abstractmethod
     async def update(self, script_id: str, new_status: str) -> None:
         pass
 

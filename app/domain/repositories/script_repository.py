@@ -15,7 +15,7 @@ class ScriptRepository(ABC):
         pass
     
     @abstractmethod
-    async def update(self, script_id: str, new_status: str) -> None:
+    async def update(self, script: "Script") -> None:
         pass
 
     @abstractmethod
