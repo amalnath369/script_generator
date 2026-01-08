@@ -12,3 +12,6 @@ pydantic
 pydantic_settings
 python-dotenv
 alembic
+
+httpx
+slowapi
