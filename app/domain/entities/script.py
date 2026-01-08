@@ -4,7 +4,7 @@ from app.domain.entities.enums import ScriptStatus
 
 
 
-@dataclass(frozen=True, kw_only= True)
+@dataclass(kw_only= True)
 class Script:
 
     id: str
